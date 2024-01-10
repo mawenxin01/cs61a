@@ -30,7 +30,10 @@ def pick(paragraphs, select, k):
     ''
     """
     # BEGIN PROBLEM 1
+    
     "*** YOUR CODE HERE ***"
+    selected_paragraphs = [p for p in paragraphs if select(p)]
+    return selected_paragraphs[k] if k < len(selected_paragraphs) else ''
     # END PROBLEM 1
 
 
@@ -50,6 +53,15 @@ def about(subject):
     assert all([lower(x) == x for x in subject]), 'subjects should be lowercase.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+    def about_subject(s):
+        splited_plain_s = split(lower(remove_punctuation(s)))
+        for t in subject:
+            if t in splited_plain_s:
+                return True
+        return False
+
+    return about_subject
+    
     # END PROBLEM 2
 
 
@@ -80,6 +92,20 @@ def accuracy(typed, source):
     source_words = split(source)
     # BEGIN PROBLEM 3
     "*** YOUR CODE HERE ***"
+    if typed_words == [] and source_words == []:
+        return 100.0
+    elif typed_words == [] or source_words == []:
+        return 0.0
+    else:
+        index, correct = 0,0
+        while index < len(typed_words) and index < len(source_words):
+            if typed_words[index] == source_words[index]:
+                correct += 1
+            index += 1
+        return correct / len(source_words)
+            
+
+        
     # END PROBLEM 3
 
 
@@ -98,6 +124,9 @@ def wpm(typed, elapsed):
     assert elapsed > 0, 'Elapsed time must be positive'
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
+    per_minute = len(typed)/5 
+    number = 60 / elapsed
+    return number*per_minute
     # END PROBLEM 4
 
 
@@ -127,6 +156,17 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    if typed_word in word_list:
+        return typed_word
+    diff_list = [diff_function(typed_word, word, limit) for word in word_list]
+    if min(diff_list) <=limit:
+        return word_list[diff_list.index(min(diff_list))]
+    else:
+        return typed_word
+    
+
+
+    
     # END PROBLEM 5
 
 
@@ -153,7 +193,17 @@ def feline_fixes(typed, source, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    if typed == source or limit < 0:
+        return 0
+    if typed == '' or source == '': # if not typed or not source
+        return len(typed) + len(source)
+    if typed[0] != source[0]:
+        return 1 + feline_fixes(typed[1:], source[1:], limit - 1)
+    return feline_fixes(typed[1:], source[1:], limit)
+
+
+
+
     # END PROBLEM 6
 
 
